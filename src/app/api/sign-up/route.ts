@@ -41,8 +41,23 @@ export const POST = async (resquest: Request) => {
                 isAcceptingMessage: true,
                 messages: []
             })
+
+            await newUser.save()
         }
 
+        //send verification email
+        const emailResponse = await sendVerificationEmail(email, username, verifyCode)
+
+        // console.log("lol",emailResponse);
+
+
+
+        if (!emailResponse.success) {
+            return Response.json({
+                success: false,
+                message: emailResponse.message
+            }, { status: 500 })
+        }
 
     } catch (error) {
         console.error("Error Registering User", error)
